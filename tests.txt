@@ -1,0 +1,12 @@
+
+I have done thorough testing of the server, and all client commands using telnet and giving different test scenarios. Here is a brief description of how I approached the testing:
+
+	* For all eight commands(USER, NICK, QUIT, JOIN, LIST, PART, PRIVMSG, and WHO), I have done extensive test case scenarios to see that I do not miss any possible errors.I have checked against providing minimum number of commands and then ensurinf that ERR_NEEDMOREPARAMS must generate. User is only registered if and only if both NICK and USER commands have been passed. I tested to esure that ERR_INVALID command is generated if user tries to access the other commands such as JOIN before registering itself. I also made sure that for any command other than the 8 defined above, ERR_UNKNOWN COMMAND is displayed. 
+	* I have tested that all clients in a channel get the quit message whenver a client does any of the following: 1) client passes the quit command 2) part command 3) Joins another channel 4) client leaves abruptly (without QUIT message). Whenever client leaves abruptly, I test to make sure that he is deleted from the channel list, all other clients on that channel get the message and client's data is deleted from client's array.
+	*In order to test for rare instant when a malicious user sends a data string greater than 512 bytes, I cut bytes and only send the first 512 butes to the handle_line and buffer. This avoids the buffer overflow problem.
+	*I test extreme cases such as when client calls LIST command when there exist no channels, the client is told that there exist no channels right now. 
+	*In order to ensure that PART command accepts multiple arguments, I test that it prints out ERR_NOTONCHANNEL for all the channels clients is not part of and quit message for the one it is part of. I also make sure that appropriate error message is printed out if user tries to PART the channel it is not part of.
+	*I tested mutiple times to make sure that whenever user changes NICK, every client on the channel get the message.
+	*I test the extreme case when user tries to send privmsg to user or channel that doesn't exist or user is not part of, he gets the errror.
+
+Like these, there are many other cases where I use mutliple tellnet statements to ensure each command is working properly and there is no warning given when compiling the files.
